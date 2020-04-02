@@ -3,11 +3,24 @@ import store from "../store.js";
 
 // @ts-ignore
 let _sandBox = axios.create({
-  //TODO Change YOURNAME to your actual name
-  baseURL: "//bcw-sandbox.herokuapp.com/api/YOURNAME/songs"
+
+  baseURL: "//bcw-sandbox.herokuapp.com/api/Matt/songs"
 });
 
 class SongsService {
+  previewTrack(id) {
+    debugger
+    let previewTrack = store.State.songs.find(song => song._id == id)
+    store.commit("activeSong", previewTrack)
+    console.log(store.State);
+  }
+
+  previewPlaylist(id) {
+    let previewTrack = store.State.songs.find(song => song._id == id)
+    store.commit("activeSong", previewTrack)
+    console.log(store.State);
+  }
+
   constructor() {
     // NOTE this will get your songs on page load
     this.getMySongs();
@@ -23,6 +36,8 @@ class SongsService {
     // @ts-ignore
     $.getJSON(url)
       .then(res => {
+        console.log(res);
+
         let results = res.results.map(rawData => new Song(rawData));
         store.commit("songs", results);
       })
@@ -38,8 +53,9 @@ class SongsService {
     _sandBox
       .get()
       .then(res => {
-        //TODO What are you going to do with this result
-        let results = res.results.map(rawData => new Song(rawData));
+        console.log(res)
+        let results = res.data.data.map(rawData => new Song(rawData));
+        store.commit("playlist", results)
       })
       .catch(error => {
         throw new Error(error);
@@ -54,6 +70,13 @@ class SongsService {
   addSong(id) {
     //TODO you only have an id, you will need to find it in the store before you can post it
     //TODO After posting it what should you do?
+    _sandBox.post('', store.State.activeSong)
+      .then(res => {
+        console.log(res.data.data)
+        this.getMySongs()
+      })
+      .catch(err => console.error(err)
+      )
   }
 
   /**
@@ -63,6 +86,12 @@ class SongsService {
    */
   removeSong(id) {
     //TODO Send the id to be deleted from the server then update the store
+    _sandBox.delete(id)
+      .then(res => {
+        console.log(res)
+        this.getMySongs()
+      })
+      .catch(err => console.error(err))
   }
 }
 

@@ -1,16 +1,45 @@
 import store from "../store.js";
 import SongService from "../Services/SongsService.js";
+import Song from "../Models/Song.js";
 
 //Private
 /**Draws the Search results to the page */
-function _drawResults() {}
+function _drawResults() {
+  document.getElementById("songs").innerHTML = ''
+  let songList = store.State.songs;
+  let template = ''
+  songList.forEach(song => {
+    template += song.Template
+  })
+  document.getElementById("songs").innerHTML = template
+
+}
 /**Draws the Users saved songs to the page */
-function _drawPlaylist() {}
+function _drawPlaylist() {
+  let playlistSongs = store.State.playlist;
+  let template = ''
+  playlistSongs.forEach(song => {
+    template += song.playlistTemplate
+  })
+  document.getElementById("playlist").innerHTML = template
+
+}
+/**Draws the currently active track to the page */
+function _drawPreview() {
+  let previewSong = store.State.activeSong
+  // let template = ``
+  // previewSong.forEach(song => template += song.previewTemplate)
+  // document.getElementById("preview").innerHTML = template
+  document.getElementById("preview").innerHTML = previewSong.previewTemplate
+
+}
 
 //Public
 export default class SongsController {
   constructor() {
-    //TODO Don't forget to register your subscribers
+    store.subscribe("playlist", _drawPlaylist)
+    store.subscribe("songs", _drawResults)
+    store.subscribe("activeSong", _drawPreview)
   }
 
   /**Takes in the form submission event and sends the query to the service */
@@ -28,11 +57,23 @@ export default class SongsController {
    * Takes in a song id and sends it to the service in order to add it to the users playlist
    * @param {string} id
    */
-  addSong(id) {}
+  addSong(id) {
+    SongService.addSong(id)
+  }
 
   /**
    * Takes in a song id to be removed from the users playlist and sends it to the server
    * @param {string} id
    */
-  removeSong(id) {}
+  removeSong(id) {
+    SongService.removeSong(id)
+  }
+
+  previewTrack(id) {
+    SongService.previewTrack(id)
+  }
+
+  previewPlaylist(id) {
+    SongService.previewPlaylist(id)
+  }
 }

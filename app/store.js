@@ -1,4 +1,5 @@
 import Song from "./Models/Song.js";
+import ActiveSong from "./Models/ActiveSong.js";
 
 let _state = {
   /** Collection of Songs from search Results
@@ -6,7 +7,10 @@ let _state = {
   songs: [],
   /**Collection of songs from the users Playlist
    * @type {Song[]} */
-  playlist: []
+  playlist: [],
+  /**Place for the active song 
+  /** @type {Song[]} */
+  activeSong: {}
 };
 
 /** Collection of listeners to be called based on keyed state changes
@@ -14,7 +18,8 @@ let _state = {
  */
 let _listeners = {
   songs: [],
-  playlist: []
+  playlist: [],
+  activeSong: []
 };
 
 //NOTE You should not need to change the code from this point down
